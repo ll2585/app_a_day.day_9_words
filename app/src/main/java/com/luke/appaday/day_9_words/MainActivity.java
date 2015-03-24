@@ -1,9 +1,11 @@
 package com.luke.appaday.day_9_words;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -166,7 +168,8 @@ public class MainActivity extends ActionBarActivity {
             makeToast("Create the DB first.");
             return;
         }
-            EditText wordEditText = (EditText) findViewById(R.id.the_word);
+
+        EditText wordEditText = (EditText) findViewById(R.id.the_word);
         EditText definitionEditText = (EditText) findViewById(R.id.the_definition);
 
         String theWord = wordEditText.getText().toString();
@@ -180,8 +183,11 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
 
-        wordDB.execSQL("INSERT INTO " + TABLE_NAME + " (word, definition) VALUES ('" +
-                theWord + "', '" + theDefinition + "');");
+        ContentValues values = new ContentValues();
+        values.put(WordContentProvider.word, theWord);
+        values.put(WordContentProvider.definition, theDefinition);
+        Uri uri = getContentResolver().insert(WordContentProvider.CONTENT_URL, values);
+
         makeToast("added " + theWord);
         setViews();
     }
